@@ -7,6 +7,10 @@ const MULTIPLY = 2;
 const END = 99;
 const INSTRUCTION_LENGTH = 4;
 
+const MIN = 0;
+const MAX = 99;
+const DESIRED_OUTPUT = 19690720;
+
 const pgm1 = [1,0,0,0,99]; // 2,0,0,0,99
 const pgm2 = [2,3,0,3,99]; // becomes 2,3,0,6,99 (3 * 2 = 6).
 const pgm3 = [2,4,4,5,99,0]; // becomes 2,4,4,5,99,9801 (99 * 99 = 9801).
@@ -46,12 +50,12 @@ const myInput = [
   2,14,0,0];
 
 const executeOperator = (program, position) => {
-  const operator = program[position];
+  const opcode = program[position];
   const operand1 = program[program[position + 1]];
   const operand2 = program[program[position + 2]];
   const outputLocation = program[position +3];
 
-  switch (operator) {
+  switch (opcode) {
     case ADD:
       program[outputLocation] = operand1 + operand2;
       break;
@@ -61,7 +65,7 @@ const executeOperator = (program, position) => {
       break;
 
     default:
-      alert('1202 prgram alarm');
+      console.log('1202 prgram alarm');
       break;
   }
 }
@@ -75,26 +79,54 @@ const runProgram = (program) => {
   }
 }
 
-const Output = (props) => {
+const RamState = (props) => {
   return (
     <h3>{ props.ram.join(', ') }</h3>
   );  
 }
 
+const findNounAndVerb = (program, desiredOuput) => {
+  let noun = MIN;
+  let verb = MIN;
+
+  for(noun = MIN; noun <= MAX; noun++) {
+    for(verb = MIN; verb <= MAX; verb++) {
+      let trialPgm = Array.from(myInput);
+      trialPgm[1] = noun;
+      trialPgm[2] = verb;
+
+      runProgram(trialPgm);
+      
+      if(trialPgm[0] === desiredOuput) {
+        return {noun, verb};
+      }
+    }  
+  }
+}
+
+const Answer = (props) => {
+  const { noun, verb } = props;
+
+  if (!noun) {
+    return (
+      <h3>Fail</h3>
+    )
+  }
+
+  return (
+    <h3>Noun = { noun }  Verb = { verb } Answer = { 100 * noun + verb }</h3>
+  )
+}
+
 function App() {
 
-  const pgm = myInput;
+  const answer = findNounAndVerb(myInput, DESIRED_OUTPUT);
 
-  // Restore from bad state (see instructions)
-  pgm[1] = 12;
-  pgm[2] = 2;
-
-  runProgram(pgm);
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <Output ram={ pgm }/>
+        <Answer { ...answer } />
       </header>
     </div>
   );
