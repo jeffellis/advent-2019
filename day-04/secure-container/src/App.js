@@ -2,22 +2,28 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import { validPassword } from './Passwords';
+
+const countValidPasswords = (min, max) => {
+  let count = 0;
+  for(let password = min; password <= max; password++) {
+    if( validPassword(password) ) {
+      count++;
+    }
+  }
+  return count;
+}
+
+const min = 254032;
+const max = 789860;
+
 function App() {
+  const count = countValidPasswords(254032, 789860);
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <h3>There are { count } valid passwords between { min } and { max }</h3>
       </header>
     </div>
   );
