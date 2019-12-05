@@ -24,6 +24,7 @@ function App() {
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <h3>There are { count } valid passwords between { min } and { max }</h3>
+        {/* <h3>{validPassword(112211)}</h3> */}
       </header>
     </div>
   );
